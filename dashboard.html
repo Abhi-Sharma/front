@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WinClub Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0b0c2a;
+      display: flex;
+      color: white;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: #111339;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .sidebar h1 {
+      font-size: 24px;
+      color: #fff;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .nav-link {
+      padding: 15px;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 16px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      transition: background 0.2s;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background-color: #1f2244;
+      color: #fff;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .section {
+      display: none;
+      animation: fadeIn 0.4s ease-in;
+      height: 100%;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .home-bg {
+      background: url("dashboard.jpg") no-repeat center center;
+      background-size: cover;
+      height: 100%;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .welcome {
+      font-size: 3rem;
+      font-weight: bold;
+      text-align: center;
+      color: #fff;
+      text-shadow: 2px 2px 10px #000;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+    }
+
+    .wallet-buttons {
+      display: flex;
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .wallet-buttons button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #272c69;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+    }
+
+    #wallet {
+      background-image: url('wallet-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .game-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #000;
+      width: 300px;
+    }
+
+    .game-card h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .game-card p {
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .game-card button {
+      padding: 10px 20px;
+      background-color: #00d9ff;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div style="text-align: center; margin-bottom: 40px;">
+        <img src="logo.png" alt="WinClub Logo" style="width: 100px; border-radius: 8px;" />
+    </div>
+    <h1>WinClub</h1>
+    <a href="#" class="nav-link active" onclick="showSection(event, 'home')">Home</a>
+    <a href="#" class="nav-link" onclick="showSection(event, 'wallet')">Wallet</a>
+    <a href="#" class="nav-link" onclick="showSection(event, 'games')">Games</a>
+    <a href="#" class="nav-link" onclick="showSection(event, 'account')">Account</a>
+  </div>
+
+  <div class="main-content">
+    <div id="home" class="section active">
+      <div class="home-bg">
+        <div class="welcome">Welcome to the WinClub Community 🎰</div>
+      </div>
+    </div>
+
+    <div id="wallet" class="section">
+        <div style="background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px;">
+      <h2>Wallet</h2>
+      <div class="wallet-buttons">
+        <button id="depositBtn">Deposit</button>
+        <button>Withdraw</button>
+      </div>
+        </div>
+    </div>
+
+    <div id="games" class="section">
+      <h2>Available Games</h2>
+      <div class="game-card">
+        <h2>Mines Game 💣</h2>
+        <p>A thrilling test of luck. Avoid the bombs and collect diamonds!</p>
+        <button>Play Now</button>
+      </div>
+    </div>
+
+    <div id="account" class="section">
+      <h2>Account Details</h2>
+      <p>Welcome, <strong id="username">demoUser123</strong></p>
+    </div>
+  </div>
+
+  <script>
+    // Function to get the username from localStorage
+    function getUser() {
+      const username = localStorage.getItem('username');
+      return username ? username : 'Guest'; // Default to 'Guest' if not found
+    }
+
+    // Update the username in the Account section dynamically
+    document.getElementById('username').textContent = getUser();
+
+    // Handle navigation between sections
+    function showSection(event, id) {
+      const sections = document.querySelectorAll(".section");
+      const links = document.querySelectorAll(".nav-link");
+
+      sections.forEach((section) => {
+        section.classList.remove("active");
+      });
+
+      links.forEach((link) => {
+        link.classList.remove("active");
+      });
+
+      document.getElementById(id).classList.add("active");
+      event.target.classList.add("active");
+
+      // Simulate PayU hash generation for demo (Use backend in production!)
+function generateHash({ key, txnid, amount, productinfo, firstname, email, salt }) {
+  const hashString = `${key}|${txnid}|${amount}|${productinfo}|${firstname}|${email}|||||||||||${salt}`;
+  const shaObj = new jsSHA("SHA-512", "TEXT");
+  shaObj.update(hashString);
+  return shaObj.getHash("HEX");
+}
+
+// Handle Deposit Button Click
+document.getElementById('depositBtn').addEventListener('click', () => {
+  const key = "5tXRBS"; // test key
+  const salt = "YOUR_TEST_SALT"; // replace with your PayU test salt
+  const txnid = "Txn" + Math.floor(Math.random() * 1000000);
+  const amount = "100.00"; // change this as needed
+  const firstname = getUser();
+  const email = "demo@example.com";
+  const phone = "9876543210";
+  const productinfo = "WalletTopup";
+  const surl = "https://yourdomain.com/success";
+  const furl = "https://yourdomain.com/failure";
+
+  const hash = generateHash({ key, txnid, amount, productinfo, firstname, email, salt });
+
+  // Create form and submit to PayU
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = "https://test.payu.in/_payment";
+
+  const fields = {
+    key, txnid, amount, productinfo, firstname, email, phone, surl, furl, hash
+  };
+
+  for (const field in fields) {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = field;
+    input.value = fields[field];
+    form.appendChild(input);
+  }
+
+  document.body.appendChild(form);
+  form.submit();
+});
+
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.4.2/sha.js"></script>
+
+</body>
+</html>
