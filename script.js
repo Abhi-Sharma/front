@@ -1,101 +1,29 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+document.getElementById('registerForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
 
-// Middleware to authenticate token
-const authenticate = async (req, res, next) => {
-  const token = req.header('x-auth-token'); // Using x-auth-token header for token
-
-  if (!token) {
-    return res.status(401).json({ message: 'No token, authorization denied' });
-  }
+  const username = document.getElementById('regUsername').value;
+  const email = document.getElementById('regEmail').value;
+  const phone = document.getElementById('regPhone').value;
+  const password = document.getElementById('regPassword').value;
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify the token using the secret
-    req.user = decoded.id; // Add user ID to request object
-    next(); // Proceed to the next middleware/route
-  } catch (err) {
-    res.status(401).json({ message: 'Token is not valid' });
-  }
-};
+    const response = await fetch('https://winclub-5wvz.onrender.com/api/user/register', { // Correct endpoint
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email, phone, password })
+    });
 
-// Get User Profile
-const getUserProfile = async (req, res) => {
-  try {
-    const user = await User.findById(req.user).select('-password'); // Exclude password field
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    // Return user profile data
-    res.json({ name: user.username, email: user.email });
-  } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
-  }
-};
+    const data = await response.json();
+    console.log('Registration Response:', data);
 
-module.exports = { authenticate, getUserProfile };
-
-
-// Get the JWT token from localStorage (where it was saved during login)
-const token = localStorage.getItem('token');
-
-// Fetch user profile with the JWT token in the headers
-fetch('/api/user/profile', {
-  method: 'GET',
-  headers: {
-    'x-auth-token': token, // Sending token in the x-auth-token header
-  }
-})
-  .then(response => response.json())
-  .then(data => {
-    if (data.name && data.email) {
-      console.log('User Profile:', data);
-      // Populate the profile information on the page
-      document.getElementById('username').textContent = data.name;
-      document.getElementById('useremail').textContent = data.email;
+    if (response.ok) {
+      alert('Registration successful!');
+      window.location.href = 'login.html';  // Redirect to login page after successful registration
     } else {
-      console.error('Error fetching profile:', data.message);
+      alert(data.message || 'Registration failed.');
     }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
-
-  const express = require('express');
-const { authenticate, getUserProfile } = require('../controllers/userController');
-const router = express.Router();
-
-// Protected route to fetch user profile
-router.get('/profile', authenticate, getUserProfile);
-
-module.exports = router;
-
-// Assuming you received the token after a successful login
-localStorage.setItem('token', response.data.token); // Store the JWT token
-// Replace this URL with your deployed backend URL
-const backendURL = 'https://winclub-5wvz.onrender.com';
-
-// Assuming you saved the token after login
-
-// Fetch user profile
-fetch(`${backendURL}/api/user/profile`, {
-  method: 'GET',
-  headers: {
-    'x-auth-token': token,
-  },
-})
-  .then(response => response.json())
-  .then(data => {
-    if (data.name && data.email) {
-      console.log('User Profile:', data);
-      document.getElementById('username').textContent = data.name;
-      document.getElementById('useremail').textContent = data.email;
-    } else {
-      console.error('Error fetching profile:', data.message);
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
-
-// Example: After successful login
-// localStorage.setItem('token', response.data.token);
+  } catch (err) {
+    console.error('Error during registration:', err);
+    alert('Something went wrong during registration.');
+  }
+});

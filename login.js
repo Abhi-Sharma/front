@@ -1,4 +1,4 @@
-const backendURL = "http://localhost:5000/api/auth"; // Update to your actual backend URL
+const backendURL = "https://winclub-5wvz.onrender.com/api/auth"; // Update to your actual backend URL
 
 const loginForm = document.getElementById("loginForm");
 
